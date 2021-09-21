@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+  <head>
+    <title>ELEMENTS ENVATO ACESSO VIA ID</title>
+
+    <link rel="stylesheet" href="css/vendor/balloon.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body class="body">
+
+    <div id="app" class="app"></div>
+
+
+    <template id="js-template-menu">
+      <div class="menu-app-logo">
+        <a href="https://wk5.com.br" target="_blank">
+          <img src="./images/header-logo.png" alt="Share Account logo" width="110">
+        </a>
+      </div>
+
+      <section class="menu">
+        <button class="btn"     data-menu="share">Compartilhar conta</button>
+        <button class="m-t btn" data-menu="restore">Receber conta</button>
+        <button class="m-t btn" data-menu="history">Contas compartilhada</button>
+      </section>
+    </template>
+
+
+    <template id="js-template-share">
+      <section class="share">
+        <div class="title">Conta</div>
+        <div class="explanation">Voce esta prestes a compartilhar a sua conta do <i>"{{=tab.title}}"</i>.</div>
+
+        <form action="/" id="js-share-session" class="m-t">
+          <div class="small">Codigo do destinatario <span class="link" data-balloon="Cole o codigo da pessoa com quem voce deseja compartilhar seu ramal. Ele pode ser encontrado no 'Receber conta' sessao." data-balloon-length="medium-xl" data-balloon-pos="right">?</span></div>
+
+          <div class="input-container">
+            <input type="text" name="pubkey" value="" placeholder="Codigo do qual voce esta compartilhando" autocomplete="off" obrigatoria />
+          </div>
+
+          <div class="small">Tempo limite em horas <span class="link" data-balloon="Explanation." data-balloon-length="medium" data-balloon-pos="right">?</span></div>
+
+          <div class="input-container timeout-container">
+            <input type="number" name="timeout" value="" min="1" placeholder="Vai durar uma semana por padrao." autocomplete="off" />
+            <div id="js-expires-on" class="expires-on"></div>
+          </div>
+
+          <div class="flex-container">
+            <div class="js-go-back go-back link">&lsaquo; de volta</div>
+            <input type="submit" name="submit" class="btn pull-right" value="Compartilhar" disabled />
+          </div>
+        </form>
+
+        <div id="js-shared-session" class="shared-session hidden">
+          <div class="small">Compartilhar resultado <span class="link" data-balloon="Compartilhe este texto com o proprietario do codigo" data-balloon-length="medium" data-balloon-pos="right">?</span> <span id="js-session-hide" class="link delete">x</span></div>
+
+          <pre id="js-shared-session-text" class="encrypted-data share-result"></pre>
+
+          <div class="action-icon" data-clipboard data-clipboard-target="#js-shared-session-text" data-balloon="Copiar codigo" data-balloon-pos="right"><img src="./images/copy.svg" alt="Copy encryption" width="12" /></div>
+
+          <div class="m-t-sm">
+            <div class="small m-b-xs">ou compartilhe este link:</div>
+
+            <div id="js-share-text-link" class="share-text-link share-result">Criando link...</div>
+
+            <div id="js-share-text-actions" class="hidden">
+              <div class="action-icon" data-balloon="Copiar um link" data-balloon-pos="right" data-clipboard data-clipboard-target="#js-share-text-link">
+                <img src="./images/copy.svg" alt="Copy link" width="12" />
+              </div>
+              <small>
+                &nbsp;
+                <span class="link" data-balloon="O site contem o resultado do compartilhamento. Ele sera excluido em 10 minutos ou na primeira visualizacao."  data-balloon-pos="right" data-balloon-length="large" data-balloon-pos="top">?</span>
+              </small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="js-error" class="error hidden"></div>
+    </template>
+
+
+    <template id="js-template-restore">
+      <section class="restore">
+        <div class="title">Receber conta</div>
+        <div class="explanation">Compartilhe seu codigo com o proprietario da conta e cole o texto que ele compartilha com voce abaixo</div>
+
+        <div class="your-code">
+          <div class="small">Seu codigo</div>
+          <input id="js-user-pubkey" name="pubkey" type="text" value="{{=publicKey}}" readonly />
+          <div class="action-icon" data-balloon="Copiar codigo" data-clipboard data-clipboard-target="#js-user-pubkey"><img src="./images/copy.svg" alt="Copy code" width="12" /></div>
+
+          <div id="js-regenerate-keys" class="action-icon" data-balloon="Regenere o codigo. Lembre-se que ao regenerar seu codigo voce perdera o atual para sempre, entao voce nao sera capaz de regenerar compartilhamentos antigos." data-balloon-length="large" data-balloon-pos="left"><img src="./images/refresh.svg" alt="Regenerate code" width="12" /></div>
+        </div>
+
+        <form action="/" id="js-restore-session" class="m-t">
+          <div>
+            <div class="small">Inserir o codigo <span class="link" data-balloon="Cole o resultado de compartilhamento aqui. Se voce deu ao remetente seu codigo, voce sera o unico capaz de descriptografa-lo." data-balloon-length="medium" data-balloon-pos="right">?</span></div>
+
+            <textarea name="encrypted-data" placeholder='Por exemplo: {"iv":"C+Qfxtx6UM6YkQ7glsVsLg==", "v":1, "iter":10000, "ks":128, "ts":64, "mode":"ccm", "adata":"", "cipher":"aes", "kemtag":"dJN3vJbV4C", "ct":"psRDxcWb"}
+
+Lembre-se de que a sessao pode terminar a qualquer momento.' rows="10"></textarea>
+            <div id="js-restore-notice" class="explanation"></div>
+          </div>
+
+          <div class="restore-session-actions flex-container">
+            <div class="js-go-back go-back link">&lsaquo; de volta</div>
+            <input type="submit" name="submit" class="btn pull-right" value="Receber" disabled />
+          </div>
+        </form>
+      </section>
+
+      <div id="js-error" class="error hidden"></div>
+    </template>
+
+
+    <template id="js-template-history">
+      <section class="history">
+        <div class="title">Contas compartilhadas</div>
+        <div class="explanation">Nos apenas monitoramos URLs e titulos e apenas por um mes, nada mais e armazenado</div>
+
+        <div class="sessions">
+          {{hasSessions}}
+            {{@sessions}}
+              <h5>Compartilhado desde {{=_key}} <span class="link delete js-delete" data-key="{{=_key}}">x</span></h5>
+              <ul>
+                {{@_val}}
+                  <li>
+                    <a class="session-url" href="{{=_val.url}}" target="_blank">{{=_val.title}}</a>
+                  </li>
+                {{/@_val}}
+              </ul>
+            {{/@sessions}}
+          {{:hasSessions}}
+            <div class="small">Ainda nao ha contas compartilhadas</div>
+          {{/hasSessions}}
+        </div>
+
+        <div class="js-go-back go-back link">&lsaquo; de volta</div>
+      </section>
+
+      <div id="js-error" class="error hidden"></div>
+    </template>
+
+
+    <script src="js/vendor/clipboard.min.js"></script>
+    <script src="js/vendor/sjcl.min.js"></script>
+    <script src="js/vendor/_t.min.js"></script>
+    <script async src="js/vendor/base64.min.js"></script>
+    <script async src="js/vendor/rawdeflate.min.js"></script>
+
+    <script src="js/log.js"></script>
+    <script src="js/http.js"></script>
+    <script src="js/configuration.js"></script>
+    <script src="js/cryptography.js"></script>
+    <script async src="js/shareText.js"></script>
+    <script async src="js/cookieManager.js"></script>
+
+    <script src="js/main.js"></script>
+
+    <script async src="js/analytics.js"></script>
+  </body>
+</html>
+
